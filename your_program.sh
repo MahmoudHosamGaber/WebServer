@@ -14,11 +14,11 @@ set -e # Exit early if any commands fail
 # - Edit .codecrafters/compile.sh to change how your program compiles remotely
 (
   cd "$(dirname "$0")" # Ensure compile steps are run within the repository directory
-  mvn -B package -Ddir=/tmp/codecrafters-build-http-server-java
+  mvn -B package -Ddir=~/projects/codecrafters-http-server-java/target/codecrafters-http-server.jar
 )
 
 # Copied from .codecrafters/run.sh
 #
 # - Edit this to change how your program runs locally
 # - Edit .codecrafters/run.sh to change how your program runs remotely
-exec java -jar /tmp/codecrafters-build-http-server-java/codecrafters-http-server.jar "$@"
+exec java -jar ~/projects/codecrafters-http-server-java/target/codecrafters-http-server.jar "$@"
