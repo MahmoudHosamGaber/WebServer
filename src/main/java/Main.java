@@ -13,7 +13,8 @@ public class Main {
       Socket socket = serverSocket.accept(); // Wait for connection from client.
       System.out.println("accepted new connection");
       PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-      writer.println("HTTP/1.1 200 OK\r\n\r\n");
+      String response = "HTTP/1.1 200 OK\r\n\r\n";
+      writer.println(response);
       System.out.println("Response 200 sent");
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
