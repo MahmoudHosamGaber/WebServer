@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -9,8 +10,11 @@ public class Main {
     try {
       ServerSocket serverSocket = new ServerSocket(4221);
       serverSocket.setReuseAddress(true);
-      serverSocket.accept(); // Wait for connection from client.
+      Socket socket = serverSocket.accept(); // Wait for connection from client.
       System.out.println("accepted new connection");
+      PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+      writer.println("HTTP/1.1 200 OK\r\n\r\n");
+      System.out.println("Response 200 sent");
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
     }
