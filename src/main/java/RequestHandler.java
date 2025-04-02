@@ -1,4 +1,3 @@
-import java.util.*;
 import java.io.*;
 import java.net.Socket;
 
@@ -18,51 +17,32 @@ public class RequestHandler implements Runnable {
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-      HashMap<String, String> header = new HashMap<>();
-      String line = reader.readLine();
-      System.out.println(line);
-      String[] startLineParts = line.split(" ");
-      header.put("method", startLineParts[0]);
-      header.put("protocol", startLineParts[2]);
-      header.put("target", startLineParts[1]);
-      line = reader.readLine();
-      while (!line.isEmpty()) {
-        int index = line.indexOf(":");
-        String key = line.substring(0, index);
-        String value = line.substring(index + 1, line.length());
-        header.put(key.trim(), value.trim());
-        line = reader.readLine();
-      }
-      int requestBodySize = Integer.parseInt(header.getOrDefault("Content-Length", "0"));
-      char[] requestBodyBytes = new char[requestBodySize];
-      reader.read(requestBodyBytes);
-      String requestBody = new String(requestBodyBytes);
-      System.out.println("Request Body: " + requestBody);
+      Request request = new Request(reader);
       int statusCode = 404;
       String body = "";
       String contentType = "text/plain";
-      if (header.get("target").equals("/")) {
+      if (request.getPath().equals("/")) {
         statusCode = 200;
-      } else if (header.get("target").startsWith("/echo/")) {
+      } else if (request.getPath().startsWith("/echo/")) {
         statusCode = 200;
-        body = header.get("target").substring("/echo/".length());
-      } else if (header.get("target").equals("/user-agent")) {
+        body = request.getPath().substring("/echo/".length());
+      } else if (request.getPath().equals("/user-agent")) {
         statusCode = 200;
-        body = header.get("User-Agent");
-      } else if (header.get("target").startsWith("/files/")) {
+        body = request.getUserAgent();
+      } else if (request.getPath().startsWith("/files/")) {
         statusCode = 200;
         contentType = "application/octet-stream";
-        String fileName = header.get("target").substring("/files/".length());
+        String fileName = request.getPath().substring("/files/".length());
         System.out.println("FileName: " + fileName);
-        if (header.get("method").equals("GET")) {
+        if (request.getMethod().equals("GET")) {
           body = FileHandler.readAll(fileName);
           if (body == null) {
             statusCode = 404;
             body = "";
           }
-        } else if (header.get("method").equals("POST")) {
+        } else if (request.getMethod().equals("POST")) {
           statusCode = 201;
-          FileHandler.writeFile(fileName, requestBody);
+          FileHandler.writeFile(fileName, request.getBody());
         }
       }
       String response = formatResponse(statusCode, body, contentType);
