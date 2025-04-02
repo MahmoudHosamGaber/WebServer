@@ -32,7 +32,7 @@ public class Request {
       String value = line.substring(index + 1, line.length());
       header.put(key.trim(), value.trim());
     }
-    System.out.println("Header data: " + lines.toString());
+    System.out.println("Request Header: " + lines.toString());
   }
 
   private void initBody(BufferedReader reader) throws IOException {
