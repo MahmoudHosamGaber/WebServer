@@ -8,7 +8,7 @@ public class Main {
     System.out.println("Logs from your program will appear here!");
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("--directory")) {
-        FileReader.setRootPath(args[i + 1]);
+        FileHandler.setRootPath(args[i + 1]);
         System.out.println("File Path:" + args[i + 1]);
       }
     }

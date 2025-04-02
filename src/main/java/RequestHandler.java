@@ -33,6 +33,10 @@ public class RequestHandler implements Runnable {
         header.put(key.trim(), value.trim());
         line = reader.readLine();
       }
+      char[] requestBodyBytes = new char[Integer.parseInt(header.get("Content-Length"))];
+      reader.read(requestBodyBytes);
+      String requestBody = new String(requestBodyBytes);
+      System.out.println("Request Body: " + requestBody);
       int statusCode = 404;
       String body = "";
       String contentType = "text/plain";
@@ -49,10 +53,15 @@ public class RequestHandler implements Runnable {
         contentType = "application/octet-stream";
         String fileName = header.get("target").substring("/files/".length());
         System.out.println("FileName: " + fileName);
-        body = FileReader.readAll(fileName);
-        if (body == null) {
-          statusCode = 404;
-          body = "";
+        if (header.get("method").equals("GET")) {
+          body = FileHandler.readAll(fileName);
+          if (body == null) {
+            statusCode = 404;
+            body = "";
+          }
+        } else if (header.get("method").equals("POST")) {
+          statusCode = 201;
+          FileHandler.writeFile(fileName, requestBody);
         }
       }
       String response = formatResponse(statusCode, body, contentType);
@@ -70,6 +79,8 @@ public class RequestHandler implements Runnable {
     String headerLine = "HTTP/1.1 200 OK";
     if (statusCode == 404)
       headerLine = "HTTP/1.1 404 Not Found";
+    else if (statusCode == 201)
+      headerLine = "HTTP/1.1 201 Created";
     sb.append(headerLine).append("\r\n");
     String[] header = { "Content-Type: " + contentType, "Content-Length: " + body.length() };
     for (String line : header)
