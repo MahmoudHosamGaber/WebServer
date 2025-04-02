@@ -23,7 +23,7 @@ public class Main {
         String method = startLineParts[0];
         String requestTargets = startLineParts[1];
         String protocol = startLineParts[2];
-        String response = "HTTP/1.1 404 \r\n\r\n";
+        String response = "HTTP/1.1 404 Not Found\r\n\r\n";
         if (requestTargets.equals("/"))
           response = "HTTP/1.1 200 OK\r\n\r\n";
         writer.println(response);
