@@ -15,21 +15,32 @@ public class Main {
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+      HashMap<String, String> header = new HashMap<>();
 
-      String startLine = reader.readLine();
-      System.out.println(startLine);
-      String[] startLineParts = startLine.split(" ");
-      String method = startLineParts[0];
-      String requestTargets = startLineParts[1];
-      String protocol = startLineParts[2];
-
+      String line = reader.readLine();
+      System.out.println(line);
+      String[] startLineParts = line.split(" ");
+      header.put("method", startLineParts[0]);
+      header.put("protocol", startLineParts[2]);
+      header.put("target", startLineParts[1]);
+      line = reader.readLine();
+      while (!line.isEmpty()) {
+        int index = line.indexOf(":");
+        String key = line.substring(0, index);
+        String value = line.substring(index + 1, line.length());
+        header.put(key.trim(), value.trim());
+        line = reader.readLine();
+      }
       int statusCode = 404;
       String body = "";
-      if (requestTargets.equals("/")) {
+      if (header.get("target").equals("/")) {
         statusCode = 200;
-      } else if (requestTargets.startsWith("/echo/")) {
+      } else if (header.get("target").startsWith("/echo/")) {
         statusCode = 200;
-        body = requestTargets.substring("/echo/".length());
+        body = header.get("target").substring("/echo/".length());
+      } else if (header.get("target").equals("/user-agent")) {
+        statusCode = 200;
+        body = header.get("User-Agent");
       }
       String response = formatResponse(statusCode, body);
 
