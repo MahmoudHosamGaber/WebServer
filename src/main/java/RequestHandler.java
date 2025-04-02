@@ -33,7 +33,8 @@ public class RequestHandler implements Runnable {
         header.put(key.trim(), value.trim());
         line = reader.readLine();
       }
-      char[] requestBodyBytes = new char[Integer.parseInt(header.get("Content-Length"))];
+      int requestBodySize = Integer.parseInt(header.getOrDefault("Content-Length", "0"));
+      char[] requestBodyBytes = new char[requestBodySize];
       reader.read(requestBodyBytes);
       String requestBody = new String(requestBodyBytes);
       System.out.println("Request Body: " + requestBody);
