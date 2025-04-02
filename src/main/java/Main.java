@@ -6,7 +6,9 @@ import java.net.Socket;
 public class Main {
   public static void main(String[] args) {
     System.out.println("Logs from your program will appear here!");
-
+    String filePath = args[0];
+    FileReader.setRootPath(filePath);
+    System.out.println("File Path:" + filePath);
     try {
       ServerSocket serverSocket = new ServerSocket(4221);
       serverSocket.setReuseAddress(true);
