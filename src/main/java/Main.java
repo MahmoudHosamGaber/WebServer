@@ -34,6 +34,7 @@ public class Main {
       String response = formatResponse(statusCode, body);
 
       writer.print(response);
+      writer.flush();
       System.out.print("Responded With:\n" + response);
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
