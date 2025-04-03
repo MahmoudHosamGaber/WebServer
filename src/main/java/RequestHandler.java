@@ -43,33 +43,14 @@ public class RequestHandler implements Runnable {
           FileHandler.writeFile(fileName, request.getBody());
         }
       }
-      Response response = new Response();
+      PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+      Response response = new Response(writer);
       response.setStatusCode(statusCode);
       response.setBody(body);
       response.setContentType(contentType);
-
-      PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-      writer.print(response.toString());
-      writer.flush();
-      System.out.print("Responded With:\n" + response.toString());
+      response.send();
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
     }
-  }
-
-  static String formatResponse(int statusCode, String body, String contentType) {
-    StringBuilder sb = new StringBuilder();
-    String headerLine = "HTTP/1.1 200 OK";
-    if (statusCode == 404)
-      headerLine = "HTTP/1.1 404 Not Found";
-    else if (statusCode == 201)
-      headerLine = "HTTP/1.1 201 Created";
-    sb.append(headerLine).append("\r\n");
-    String[] header = { "Content-Type: " + contentType, "Content-Length: " + body.length() };
-    for (String line : header)
-      sb.append(line).append("\r\n");
-    sb.append("\r\n");
-    sb.append(body);
-    return sb.toString();
   }
 }

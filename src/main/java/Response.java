@@ -1,15 +1,19 @@
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class Response {
-  int statusCode = 200;
-  String protocol = "HTTP/1.1";
-  Map<String, String> header = new HashMap<>();
-  Map<Integer, String> statusMessage = new HashMap<>();
-  String body;
+  private int statusCode = 200;
+  private String protocol = "HTTP/1.1";
+  private Map<String, String> header = new HashMap<>();
+  private Map<Integer, String> statusMessage = new HashMap<>();
+  private String body;
+  private PrintWriter writer;
 
-  public Response() {
+  public Response(PrintWriter writer) {
+    this.writer = writer;
+    header.put("Content-Type", "text/plain");
     initStatusMessage();
   }
 
@@ -17,6 +21,25 @@ public class Response {
     statusMessage.put(200, "OK");
     statusMessage.put(201, "Created");
     statusMessage.put(404, "Not Found");
+  }
+
+  public void send() {
+    String message = formatMessage();
+    writer.print(message);
+    writer.close();
+    System.out.print("Responded With:\n" + formatMessage());
+  }
+
+  private String formatMessage() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(protocol).append(" ").append(statusCode).append(" ").append(statusMessage.get(statusCode)).append("\r\n");
+    header.put("Content-Length", Integer.toString(body.length()));
+    for (Entry<String, String> entry : header.entrySet()) {
+      sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
+    }
+    sb.append("\r\n");
+    sb.append(body);
+    return sb.toString();
   }
 
   public void setStatusCode(int statusCode) {
@@ -30,18 +53,4 @@ public class Response {
   public void setContentType(String contentType) {
     header.put("Content-Type", contentType);
   }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(protocol).append(" ").append(statusCode).append(" ").append(statusMessage.get(statusCode)).append("\r\n");
-    header.put("Content-Length", Integer.toString(body.length()));
-    for (Entry<String, String> entry : header.entrySet()) {
-      sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
-    }
-    sb.append("\r\n");
-    sb.append(body);
-    return sb.toString();
-  }
-
 }
