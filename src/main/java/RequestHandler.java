@@ -43,12 +43,15 @@ public class RequestHandler implements Runnable {
           FileHandler.writeFile(fileName, request.getBody());
         }
       }
-      String response = formatResponse(statusCode, body, contentType);
+      Response response = new Response();
+      response.setStatusCode(statusCode);
+      response.setBody(body);
+      response.setContentType(contentType);
 
       PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-      writer.print(response);
+      writer.print(response.toString());
       writer.flush();
-      System.out.print("Responded With:\n" + response);
+      System.out.print("Responded With:\n" + response.toString());
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
     }
