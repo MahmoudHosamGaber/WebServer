@@ -15,9 +15,7 @@ public class RequestHandler implements Runnable {
 
   void handleRequest() {
     try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-      Request request = new Request(reader);
+      Request request = new Request(socket.getInputStream());
       int statusCode = 404;
       String body = "";
       String contentType = "text/plain";
@@ -47,6 +45,7 @@ public class RequestHandler implements Runnable {
       }
       String response = formatResponse(statusCode, body, contentType);
 
+      PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
       writer.print(response);
       writer.flush();
       System.out.print("Responded With:\n" + response);
