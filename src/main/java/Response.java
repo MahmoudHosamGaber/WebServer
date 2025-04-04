@@ -84,7 +84,7 @@ public class Response {
 
   public void setCompression(List<String> availableCompressions) {
     for (String compression : availableCompressions) {
-      if (supportedCompressions.contains(compression.toLowerCase())) {
+      if (supportedCompressions.contains(compression.trim().toLowerCase())) {
         header.put("Content-Encoding", compression);
         return;
       }
