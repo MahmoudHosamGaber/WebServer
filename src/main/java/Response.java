@@ -24,7 +24,36 @@ public class Response {
     statusMessage.put(404, "Not Found");
   }
 
-  public void send() {
+  public void setStatusCode(int statusCode) {
+    this.statusCode = statusCode;
+  }
+
+  public void empty() {
+    text("");
+  }
+
+  public void text(String body) {
+    setContentType("text/plain");
+    send(body);
+  }
+
+  public void html(String body) {
+    setContentType("text/html");
+    send(body);
+  }
+
+  public void json(String body) {
+    setContentType("application/json");
+    send(body);
+  }
+
+  public void file(String body) {
+    setContentType("application/octet-stream");
+    send(body);
+  }
+
+  private void send(String body) {
+    setBody(body);
     String message = formatMessage();
     writer.print(message);
     writer.close();
@@ -43,15 +72,11 @@ public class Response {
     return sb.toString();
   }
 
-  public void setStatusCode(int statusCode) {
-    this.statusCode = statusCode;
-  }
-
-  public void setBody(String body) {
+  private void setBody(String body) {
     this.body = body;
   }
 
-  public void setContentType(String contentType) {
+  private void setContentType(String contentType) {
     header.put("Content-Type", contentType);
   }
 }

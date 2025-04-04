@@ -30,33 +30,33 @@ public class Main {
 
   private static void setRoutes() {
     Router.get("/", (req, res) -> {
-      res.send();
+      res.empty();
     });
     Router.get("/echo/:text", (req, res) -> {
-      res.setBody(req.getParams("text"));
-      res.send();
+      res.text(req.getParams("text"));
     });
     Router.get("/user-agent", (req, res) -> {
-      res.setBody(req.getUserAgent());
-      res.send();
+      res.text(req.getUserAgent());
     });
     Router.get("/files/:fileName", (req, res) -> {
       String fileName = req.getParams("fileName");
       String fileContent = FileHandler.readAll(fileName);
       if (fileContent == null) {
         res.setStatusCode(404);
-        res.send();
+        res.empty();
         return;
       }
-      res.setContentType("application/octet-stream");
-      res.setBody(fileContent);
-      res.send();
+      res.file(fileContent);
     });
     Router.post("/files/:fileName", (req, res) -> {
       String fileName = req.getParams("fileName");
       FileHandler.writeFile(fileName, req.getBody());
       res.setStatusCode(201);
-      res.send();
+      res.empty();
+    });
+    Router.get("*", (req, res) -> {
+      res.setStatusCode(404);
+      res.html("<h1>Cannot GET /" + req.getParams("wildcard") + "</h1>");
     });
   }
 }

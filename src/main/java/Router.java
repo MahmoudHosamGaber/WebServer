@@ -9,7 +9,7 @@ public class Router {
   private static List<BiConsumer<Request, Response>> functions = new ArrayList<>();
   private static BiConsumer<Request, Response> defaultFunction = (req, res) -> {
     res.setStatusCode(404);
-    res.send();
+    res.empty();
   };
 
   public static void get(String path, BiConsumer<Request, Response> function) {
