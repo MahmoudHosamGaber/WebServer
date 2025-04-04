@@ -1,7 +1,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,18 +57,17 @@ public class Response {
   }
 
   private void send(String body) {
-    PrintWriter writer = new PrintWriter(outputStream);
-    byte[] compressed;
     try {
-      compressed = getBody(body);
+      byte[] bodyData = getBodyData(body);
+      String headerData = formatHeader(bodyData.length);
+      outputStream.write(headerData.getBytes("UTF-8"));
+      outputStream.write(bodyData);
+      System.out.println(headerData);
+      System.out.println(new String(bodyData));
+      System.out.println(Arrays.toString(bodyData));
     } catch (IOException e) {
-      compressed = body.getBytes();
+      e.printStackTrace();
     }
-    String message = formatHeader(compressed.length);
-    writer.print(message);
-    writer.print(compressed);
-    writer.close();
-    System.out.println(message);
   }
 
   private String formatHeader(int bodySize) {
@@ -82,15 +81,15 @@ public class Response {
     return sb.toString();
   }
 
-  private byte[] getBody(String body) throws IOException {
+  private byte[] getBodyData(String body) throws IOException {
     if (getCompression().equalsIgnoreCase("gzip")) {
       ByteArrayOutputStream bytes = new ByteArrayOutputStream();
       try (GZIPOutputStream gzip = new GZIPOutputStream(bytes)) {
-        gzip.write(body.getBytes());
+        gzip.write(body.getBytes("UTF-8"));
       }
       return bytes.toByteArray();
     }
-    return body.getBytes();
+    return body.getBytes("UTF-8");
   }
 
   private void setContentType(String contentType) {
