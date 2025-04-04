@@ -1,6 +1,7 @@
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -11,6 +12,7 @@ public class Response {
   private Map<Integer, String> statusMessage = new HashMap<>();
   private String body = "";
   private PrintWriter writer;
+  private List<String> supportedCompressions = List.of("gzip");
 
   public Response(OutputStream outputStream) {
     this.writer = new PrintWriter(outputStream);
@@ -78,5 +80,14 @@ public class Response {
 
   private void setContentType(String contentType) {
     header.put("Content-Type", contentType);
+  }
+
+  public void setCompression(List<String> availableCompressions) {
+    for (String compression : availableCompressions) {
+      if (supportedCompressions.contains(compression.toLowerCase())) {
+        header.put("Content-Encoding", compression);
+        return;
+      }
+    }
   }
 }

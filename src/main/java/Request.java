@@ -83,4 +83,8 @@ public class Request {
   public String getParams(String param) {
     return params.get(param);
   }
+
+  public String getSupportedCompression() {
+    return header.getOrDefault("Accept-Encoding", "");
+  }
 }
