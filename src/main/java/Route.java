@@ -29,6 +29,7 @@ public class Route {
         params.add(param);
         regexBuilder.append("([^/]+)");
       } else if (part.equals("*")) {
+        params.add("wildcard");
         regexBuilder.append("(.*)");
       } else {
         regexBuilder.append(Pattern.quote(part));
@@ -38,16 +39,19 @@ public class Route {
     return regexBuilder.toString();
   }
 
-  public boolean doesMatch(Request request) {
-    if (!request.getMethod().equals(method))
+  public boolean doesMatch(String method, String path) {
+    if (!this.method.equals(method))
       return false;
-    Matcher matcher = regex.matcher(request.getPath());
+    Matcher matcher = regex.matcher(path);
     return matcher.matches();
   }
 
   public Map<String, String> getParams(String path) {
+    System.out.println(regex.toString());
+    System.out.println(params.toString());
     Map<String, String> paramMap = new HashMap<>();
     Matcher matcher = regex.matcher(path);
+    matcher.matches();
     for (int i = 0; i < params.size(); i++) {
       paramMap.put(params.get(i), matcher.group(i + 1));
     }

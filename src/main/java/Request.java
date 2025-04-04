@@ -11,12 +11,14 @@ public class Request {
   private String body;
 
   private Map<String, String> header;
+  private Map<String, String> params;
 
   public Request(InputStream inputStream) throws IOException {
     header = new HashMap<>();
     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
     initHeader(reader);
     initBody(reader);
+    initParams();
   }
 
   private void initHeader(BufferedReader reader) throws IOException {
@@ -44,6 +46,10 @@ public class Request {
     reader.read(requestBodyBytes);
     body = new String(requestBodyBytes);
     System.out.println("Request Body: " + body);
+  }
+
+  private void initParams() {
+    params = Router.getParams(getMethod(), getPath());
   }
 
   private int getContentLength() {
@@ -74,4 +80,7 @@ public class Request {
     return header.get("User-Agent");
   }
 
+  public String getParams(String param) {
+    return params.get(param);
+  }
 }

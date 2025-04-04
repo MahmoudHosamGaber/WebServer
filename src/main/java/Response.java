@@ -1,3 +1,4 @@
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,11 +9,11 @@ public class Response {
   private String protocol = "HTTP/1.1";
   private Map<String, String> header = new HashMap<>();
   private Map<Integer, String> statusMessage = new HashMap<>();
-  private String body;
+  private String body = "";
   private PrintWriter writer;
 
-  public Response(PrintWriter writer) {
-    this.writer = writer;
+  public Response(OutputStream outputStream) {
+    this.writer = new PrintWriter(outputStream);
     header.put("Content-Type", "text/plain");
     initStatusMessage();
   }
