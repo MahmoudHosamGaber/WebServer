@@ -11,7 +11,7 @@ public class FileHandler {
   }
 
   public FileHandler(String rootPath) {
-    this.rootPath = rootPath;
+    FileHandler.rootPath = rootPath;
   }
 
   public static String readAll(String fileName) {
