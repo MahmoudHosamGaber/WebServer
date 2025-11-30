@@ -13,13 +13,14 @@ public class Main {
       }
     }
     try (ServerSocket serverSocket = new ServerSocket(4221)) {
+      System.out.println("Server started on port 4221");
       serverSocket.setReuseAddress(true);
       setRoutes();
       int avaiableProcessors = Runtime.getRuntime().availableProcessors();
       ExecutorService executorService = Executors.newFixedThreadPool(avaiableProcessors);
       while (true) {
         Socket socket = serverSocket.accept();
-        System.out.println("accepted new connection");
+        System.out.println("Accepted a New Connection");
         RequestHandler requestHandler = new RequestHandler(socket);
         executorService.execute(requestHandler);
       }

@@ -47,8 +47,8 @@ public class Route {
   }
 
   public Map<String, String> getParams(String path) {
-    System.out.println(regex.toString());
-    System.out.println(params.toString());
+    System.out.println("Path Regex: " + regex.toString());
+    System.out.println("Path Params: " + params.toString());
     Map<String, String> paramMap = new HashMap<>();
     Matcher matcher = regex.matcher(path);
     matcher.matches();

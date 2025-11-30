@@ -37,7 +37,7 @@ public class Request {
       String value = line.substring(index + 1, line.length());
       header.put(key.trim(), value.trim());
     }
-    System.out.println("Request Header: " + lines.toString());
+    System.out.println("Request Header:\n" + lines.toString());
   }
 
   private void initBody(BufferedReader reader) throws IOException {
@@ -45,7 +45,7 @@ public class Request {
     char[] requestBodyBytes = new char[requestBodySize];
     reader.read(requestBodyBytes);
     body = new String(requestBodyBytes);
-    System.out.println("Request Body: " + body);
+    System.out.println("Request Body:\n" + body);
   }
 
   private void initParams() {

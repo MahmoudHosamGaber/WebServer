@@ -62,9 +62,8 @@ public class Response {
       String headerData = formatHeader(bodyData.length);
       outputStream.write(headerData.getBytes("UTF-8"));
       outputStream.write(bodyData);
-      System.out.println(headerData);
-      System.out.println(new String(bodyData));
-      System.out.println(Arrays.toString(bodyData));
+      System.out.println("Response Header:\n" + headerData);
+      System.out.println("Response Body:\n" + new String(bodyData));
     } catch (IOException e) {
       e.printStackTrace();
     }
