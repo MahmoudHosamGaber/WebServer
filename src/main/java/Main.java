@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
   public static void main(String[] args) {
@@ -13,12 +15,13 @@ public class Main {
     try (ServerSocket serverSocket = new ServerSocket(4221)) {
       serverSocket.setReuseAddress(true);
       setRoutes();
+      int avaiableProcessors = Runtime.getRuntime().availableProcessors();
+      ExecutorService executorService = Executors.newFixedThreadPool(avaiableProcessors);
       while (true) {
         Socket socket = serverSocket.accept();
         System.out.println("accepted new connection");
         RequestHandler requestHandler = new RequestHandler(socket);
-        Thread handler = new Thread(requestHandler);
-        handler.start();
+        executorService.execute(requestHandler);
       }
     } catch (IOException e) {
       e.printStackTrace();
